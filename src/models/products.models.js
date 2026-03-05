@@ -3,10 +3,17 @@ import { pool } from '../db/db.js';
 
 export const getItem = async ( productId ) => {
 	try {
-		const products = await pool.query(`SELECT *
+		const products = await pool.query(`SELECT products.*,
+                                                  json_agg(
+                                                          json_build_object(
+                                                                  'url', product_images.url
+                                                          )
+                                                  ) AS images
                                            FROM products
-                                           WHERE id = $1`, [productId]);
-		return products.rows
+                                                    LEFT JOIN product_images ON products.id = product_images.product_id
+                                           WHERE products.id = $1
+                                           GROUP BY products.id`, [productId]);
+		return products.rows[ 0 ]
 	} catch (err) {
 		console.log('Error', err)
 	}
@@ -14,45 +21,9 @@ export const getItem = async ( productId ) => {
 
 export const listItems = async () => {
 	try {
-		const items = await pool.query(`SELECT id, title, color, price, image_url
+		const items = await pool.query(`SELECT id, title, color, price, poster
                                         FROM products;`);
 		return items.rows
-	} catch (err) {
-		console.log('Error', err)
-	}
-}
-
-export const editItem = ( productId, data ) => {
-	try {
-		const index = db.products.findIndex(product => product.id === productId)
-		if (index === -1) {
-			throw new Error('Product not found')
-		} else {
-			db.products[ index ] = data
-			return db.products[ index ]
-		}
-	} catch (err) {
-		console.log('Error', err)
-	}
-}
-export const deleteItem = ( productId ) => {
-	try {
-		const index = db.products.findIndex(product => product.id === productId)
-		if (index === -1) {
-			throw new Error('Product not found')
-		} else {
-			db.products.splice(index, 1)
-			return db.products
-		}
-	} catch (err) {
-		console.log('Error', err)
-	}
-}
-export const addItem = ( data ) => {
-	try {
-		const newProduct = { id: db.products.length + 1, ...data }
-		db.products.push(newProduct)
-		return newProduct
 	} catch (err) {
 		console.log('Error', err)
 	}

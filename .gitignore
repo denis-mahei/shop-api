@@ -14,10 +14,10 @@ yarn-error.log*
 # MacOS
 .DS_Store
 
-# Postgres local files (якщо є)
+# Postgres local files
 *.sqlite
 *.db
-
+*.test.js
 # Optional editor folders
 .vscode/
 .idea/

@@ -1,11 +1,20 @@
-import { getItem, listItems, editItem, addItem, deleteItem } from '../models/products.models.js'
+import { getItem, listItems } from '../models/products.models.js'
 
 export const getProduct = async ( req, res ) => {
 	try {
-		const response = await getItem(parseInt(req.params.id));
+		const response = await getItem(req.params.id);
 		res.status(200).json(response);
 	} catch (e) {
 		console.log(e.message)
+	}
+}
+
+export const listProducts = async ( req, res ) => {
+	try {
+		const response = await listItems();
+		res.status(200).json(response);
+	} catch (err) {
+		res.status(500).send(err);
 	}
 }
 
@@ -27,14 +36,6 @@ export const editProduct = ( req, res ) => {
 	}
 }
 
-export const listProducts = async ( req, res ) => {
-	try {
-		const response = await listItems();
-		res.status(200).json(response);
-	} catch (err) {
-		res.status(500).send(err);
-	}
-}
 
 export const deleteProduct = ( req, res ) => {
 	try {

@@ -6,8 +6,9 @@ import router from "./routes/products.routes.js";
 
 const PORT = Number(getEnvVar('PORT', 3000));
 
+const app = express();
+
 export const startServer = () => {
-	const app = express();
 
 	app.use(express.json());
 	app.use(cors());
